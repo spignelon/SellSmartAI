@@ -1,0 +1,16 @@
+[Unit]
+Description=gunicorn django daemon
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/var/www/AmazonSambhav/backend
+ExecStart=/var/www/AmazonSambhav/backend/venv/bin/gunicorn --access-logfile - --workers 10 --timeout 30 --bind unix:/run/gunicorn_social2amazon.sock backend.wsgi:application
+Environment="PATH=/var/www/AmazonSambhav/backend/venv/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="PRODUCTION=True"
+# stderr_logfile = /var/www/AmazonSambhav/backend/logs/error.log
+# stdout_logfile = /var/www/AmazonSambhav/backend/logs/access.log
+
+[Install]
+WantedBy=multi-user.target

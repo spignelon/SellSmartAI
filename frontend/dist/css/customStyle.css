@@ -1,0 +1,269 @@
+.social-media-icon{
+    width: 50px; 
+    height: 50px; 
+    font-size: 1.5rem;
+}
+
+.text-secondary-custom {
+    color: #8b8c92;
+    font-family: 'Inter';
+}
+
+.featured-content-title{
+    font-size: xx-large;
+    font-weight: 700;
+    color: #333;
+    font-family: inherit;
+}
+.featured-content{
+    z-index: -1;
+}
+.featured-content .carousel-item img {
+    height: 300px;
+    object-fit: cover;
+}
+.featured-content .btn-primary {  
+    background-color: #2275fc;
+    border-color: #2275fc;
+    color: #fff;
+}
+.featured-content .btn-primary:hover {
+    background-color: #1c5fcf;
+    border-color: #1c5fcf;
+}
+.featured-content .btn-outline-primary {
+    color: #2275fc;
+    border-color: #2275fc;
+}
+.featured-content .btn-outline-primary:hover {
+    background-color: #2275fc;
+    color: #fff;
+}
+.link-btn{
+    font-size: 16px;
+}
+
+.card{
+    border-radius: 3%;
+}
+
+.card-img-container {
+    height: 200px;
+    overflow: hidden;
+    border-radius: 3% 3% 0 0;
+}
+.card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 3%;
+}
+.card:hover .card-overlay {
+    opacity: 1;
+}
+.card {
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.added-products-title{
+    font-size: 18px;
+}
+
+/* Modal overlay to cover everything */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Dim background */
+    z-index: 1050; /* Higher than other elements */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content styling */
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1060; /* Slightly higher than the overlay */
+    position: relative; /* Relative to itself */
+}
+.logo{
+    height:4rem;
+    width: 10rem;
+}
+
+/* Add this to your CSS file or inside a <style> tag in the same component for scoped styles */
+
+/* Overlay for the modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050; /* Higher than other components */
+  }
+  
+  /* Modal container */
+  .modal-content {
+    background-color: #ffffff; /* White background */
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%; /* Adjust width for responsiveness */
+    max-width: 500px; /* Maximum width */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    position: relative; /* For positioning close button */
+  }
+  
+  /* Modal header */
+  .modal-content h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #333; /* Darker text color */
+  }
+  
+  /* Form fields */
+  .modal-content form label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #555; /* Gray for labels */
+  }
+  
+  .modal-content form input,
+  .modal-content form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  /* Submit button */
+  .modal-content form button[type="button"] {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .modal-content form button[type="button"]:first-of-type {
+    background-color: #007bff; /* Primary button color */
+    color: #fff;
+    margin-right: 10px;
+  }
+  
+  .modal-content form button[type="button"]:first-of-type:hover {
+    background-color: #0056b3; /* Darker shade for hover */
+  }
+  
+  .modal-content form button[type="button"]:last-of-type {
+    background-color: #dc3545; /* Danger button */
+    color: #fff;
+  }
+  
+  .modal-content form button[type="button"]:last-of-type:hover {
+    background-color: #a71d2a; /* Darker shade for hover */
+  }
+  
+  /* Close button */
+  .modal-content .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .modal-content .close-btn:hover {
+    color: #333; /* Darker hover color */
+  }
+  .loader {
+    border: 2px solid transparent;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh; /* Max height of modal */
+  overflow-y: auto; /* Enables vertical scrolling if content exceeds max height */
+}
+
+/* Optional: For smooth scrolling */
+.scroll {
+  scroll-behavior: smooth;
+}
+
+.menu-item{
+  
+}
+
+.menu-item :hover{
+  text-decoration: none;
+}
