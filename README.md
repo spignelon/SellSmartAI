@@ -1,4 +1,4 @@
-# Social2Amazon  
+# SellSmart AI  
 
 <p align="center">
     <a href="https://python.org">
@@ -176,7 +176,7 @@ Generated Amazon Listing:
 
 ### Backend Setup  
 ```bash  
-git clone https://github.com/pushpenderindia/AmazonSambhav  
+git clone https://github.com/spignelon/SellSmartAI 
 python3 -m venv venv  
 source venv/bin/activate  
 cd backend  
@@ -199,7 +199,7 @@ npm run dev
 ```
 apt install nginx python3.12-pip
 
-git clone https://github.com/pushpenderindia/AmazonSambhav  
+git clone https://github.com/spignelon/SellSmartAI 
 
 # Configure Ngnix
 sudo cp -rf DevOps/social2amazon.conf /etc/nginx/sites-available/social2amazon
