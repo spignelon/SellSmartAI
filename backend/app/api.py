@@ -65,7 +65,8 @@ class RecentFetchedPostAPI(APIView):
         """
         Get the most recent fetched post, only 1 post
         """
-        recent_fetched_posts = ProductListings.objects.last()
+        # Change from .last() to ordering by updated_at in descending order
+        recent_fetched_posts = ProductListings.objects.order_by('-updated_at').first()
         
         if recent_fetched_posts:
             # Get serialized data
