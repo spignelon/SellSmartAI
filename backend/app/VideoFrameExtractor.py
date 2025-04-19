@@ -1,32 +1,26 @@
-import cv2
 import os
-import random
+import uuid
+import cv2
+import tempfile
 import requests
-import string
+from django.conf import settings
 
 class VideoFrameExtractor:
-    def __init__(self, video_url, output_folder="static"):
-        """
-        Initializes the VideoFrameExtractor.
-
-        :param video_path: Path to the video file.
-        :param output_folder: Directory where extracted frames will be saved.
-        """
+    def __init__(self, video_url):
         self.video_url = video_url
-        self.video_path = ""
-        self.output_folder = output_folder
+        # Generate a unique folder name for this extraction
+        self.unique_folder_name = str(uuid.uuid4().hex)[:10]
+        # Use STATIC_ROOT for file storage
+        self.output_dir = os.path.join(settings.BASE_DIR, 'static', self.unique_folder_name)
+        os.makedirs(self.output_dir, exist_ok=True)
+        print(f"Created directory at: {self.output_dir}")
 
-    def download_video(self, url: str):
-        """
-        Download a video from a URL and save it to a file.
-        
-        :param url: URL of the video to download
-        :param filename: Name of the file to save the video to
-        """
+    def _download_video(self):
+        """Download the video from the given URL and return the path to the downloaded file"""
         random_alphanumeric_file_name = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
         filename = f"static/video_{random_alphanumeric_file_name}.mp4"
         try:
-            response = requests.get(url)
+            response = requests.get(self.video_url)
             response.raise_for_status()
             with open(filename, "wb") as file:
                 file.write(response.content)
@@ -41,16 +35,12 @@ class VideoFrameExtractor:
             raise FileNotFoundError(f"The video file '{self.video_path}' does not exist.")
 
     def _create_output_folder(self):
-        """Creates the output folder if it does not exist."""
-        os.makedirs(self.output_folder, exist_ok=True)
+        """Create the output folder for extracted frames if it doesn't exist"""
+        os.makedirs(self.output_dir, exist_ok=True)
 
     def extract_frames(self):
-        """
-        Extracts frames from the video every 2 seconds.
-
-        :return: List of file paths to the extracted frames.
-        """
-        self.video_path = self.download_video(self.video_url)
+        """Extract frames from the video and return a list of paths to the extracted frames"""
+        self.video_path = self._download_video()
         self._validate_video_path()
         self._create_output_folder()
         cap = cv2.VideoCapture(self.video_path)
@@ -71,7 +61,7 @@ class VideoFrameExtractor:
 
             if frame_count % interval == 0:
                 frame_name = f"frame_{frame_index:04d}.jpg"
-                frame_path = os.path.join(self.output_folder, frame_name)
+                frame_path = os.path.join(self.output_dir, frame_name)
                 cv2.imwrite(frame_path, frame)
                 frame_paths.append(frame_path)
                 frame_index += 1
@@ -79,7 +69,21 @@ class VideoFrameExtractor:
             frame_count += 1
 
         cap.release()
-        return frame_paths
+        
+        # When returning frame paths, convert to full URLs
+        frame_urls = []
+        for frame_file in frame_paths:
+            # Get relative path from STATIC_ROOT
+            relative_path = os.path.relpath(frame_file, settings.STATIC_ROOT)
+            # Create URL using STATIC_URL
+            frame_url = f"{settings.STATIC_URL}{relative_path}"
+            # For development, add the full URL if not already present
+            if settings.DEBUG and not frame_url.startswith('http'):
+                # Use your site domain - in development this is typically localhost:8000
+                frame_url = f"http://127.0.0.1:8000{frame_url}"
+            frame_urls.append(frame_url)
+            
+        return frame_urls
 
 # Example usage
 if __name__ == "__main__":

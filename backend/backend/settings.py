@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Fix: Using pathlib.Path instead of string-based path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -148,7 +149,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+# This is where Django will look for static files during development
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  
+
+# This is where collectstatic will put files for production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media files (User uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# For storing uploaded frames/images
+FRAMES_DIR = os.path.join(BASE_DIR, 'media', 'frames')
+os.makedirs(FRAMES_DIR, exist_ok=True)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

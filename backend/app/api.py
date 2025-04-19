@@ -66,8 +66,19 @@ class RecentFetchedPostAPI(APIView):
         Get the most recent fetched post, only 1 post
         """
         recent_fetched_posts = ProductListings.objects.last()
-        serializer = ProductListingsSerializer(recent_fetched_posts)
-        return Response(serializer.data)
+        
+        if recent_fetched_posts:
+            # Get serialized data
+            serializer = ProductListingsSerializer(recent_fetched_posts)
+            data = serializer.data
+            
+            # Update image URLs to include full domain if needed
+            if 'images_list' in data and data['images_list']:
+                data['full_images_list'] = recent_fetched_posts.get_full_image_urls()
+                
+            return Response(data)
+        
+        return Response({})
 
 class UpdateListingAPI(APIView):
     permission_classes = [ClerkAuthenticated]
@@ -89,8 +100,10 @@ class UpdateListingAPI(APIView):
 class PreviousListingAPI(APIView):
     permission_classes = [ClerkAuthenticated]
     def get(self, request):
-        previous_listings = ProductListings.objects.all().order_by('-created_at')[1:]
-        serializer = ProductListingsSerializer(previous_listings, many=True)
+        # Change: Get ALL listings instead of excluding the most recent
+        # Previously this was using [1:] which skipped the first result
+        all_listings = ProductListings.objects.all().order_by('-created_at')
+        serializer = ProductListingsSerializer(all_listings, many=True)
         return Response(serializer.data)
 
 class DashboardStatsAPI(APIView):
@@ -203,13 +216,37 @@ class ConvertVideoToImagesAPI(APIView):
             })
         else:
             extractor = VideoFrameExtractor(video_url)
-            frame_files = extractor.extract_frames()
-            get_quality = ImageQualityChecker(frame_files)
-            quality_images = get_quality.start()
-            return Response({
-                "message": "Video converted to images successfully",
-                "quality_images": quality_images
-            })
+            try:
+                frame_files = extractor.extract_frames()
+                
+                # Ensure frame_files have full URLs with domain
+                full_frame_urls = []
+                base_url = "http://127.0.0.1:8000" if settings.DEBUG else ""
+                
+                for url in frame_files:
+                    # Make sure we have a proper URL format
+                    if url.startswith('/'):
+                        url = f"{base_url}{url}"
+                    elif not url.startswith('http') and settings.DEBUG:
+                        url = f"{base_url}/{url}"
+                    full_frame_urls.append(url)
+                
+                get_quality = ImageQualityChecker(full_frame_urls)
+                quality_images = get_quality.start()
+                
+                return Response({
+                    "message": "Video converted to images successfully",
+                    "quality_images": quality_images
+                })
+            except Exception as e:
+                # Add error handling to help debug issues
+                import traceback
+                print(f"Error extracting frames: {str(e)}")
+                print(traceback.format_exc())
+                return Response({
+                    "message": f"Error extracting frames: {str(e)}",
+                    "error": True
+                }, status=500)
 
 class Social2AmazonAPI(APIView):
     permission_classes = [ClerkAuthenticated]
@@ -250,11 +287,28 @@ class Social2AmazonAPI(APIView):
                 product_title_hash = hash(product_title)
                 if ProductListings.objects.filter(product_id=product_title_hash).exists():
                     ProductListings.objects.filter(product_id=product_title_hash).delete()
+                
+                # Make sure product_data has valid JSON or None for JSON fields
+                if 'about this item' in product_data and not isinstance(product_data['about this item'], (dict, list)) and product_data['about this item']:
+                    # Convert string to valid JSON or set to None
+                    try:
+                        import json
+                        product_data['about this item'] = json.loads(product_data['about this item'])
+                    except:
+                        product_data['about this item'] = None
+
+                if 'product_details' in product_data and not isinstance(product_data['product_details'], (dict, list)) and product_data['product_details']:
+                    try:
+                        import json
+                        product_data['product_details'] = json.loads(product_data['product_details'])
+                    except:
+                        product_data['product_details'] = None
+
                 ProductListings(
                     product_id=product_title_hash,
                     images_list=product_data.get('images_list'),
                     product_title=product_title,
-                    price=product_data.get('price'),
+                    price=product_data.get('price'),  # Keep as string
                     product_details=product_data.get('product_details'),
                     about_this_item=product_data.get('about this item'),
                     product_description=product_data.get('Product description')

@@ -16,9 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.static import serve
+from django.urls import re_path
+import os  # Add this import
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('app.urls'))
 ]
+
+# For development, explicitly serve static files
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^static/(?P<path>.*)$', serve, {'document_root': os.path.join(settings.BASE_DIR, 'static')}),
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
