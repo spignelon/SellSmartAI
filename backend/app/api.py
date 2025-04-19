@@ -10,6 +10,7 @@ from .FacebookFetcher import FacebookFetcher
 from .VideoFrameExtractor import VideoFrameExtractor
 from .ImageQualityChecker import ImageQualityChecker
 import backend.settings as settings
+from rest_framework.permissions import AllowAny
 
 post_data = [
     {
@@ -261,4 +262,11 @@ class Social2AmazonAPI(APIView):
                 return Response({
                     "message": "Data added successfully",
                 })
-            
+
+class HealthCheckAPI(APIView):
+    """
+    Endpoint to check API health without authentication
+    """
+    permission_classes = [AllowAny]
+    def get(self, request):
+        return Response({"status": "healthy"})

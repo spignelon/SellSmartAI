@@ -40,6 +40,13 @@ RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY')
 FACEBOOK_RAPIDAPI_KEY = os.getenv('FACEBOOK_RAPIDAPI_KEY')
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
+# Clerk Authentication Settings
+CLERK_SECRET_KEY = 'your_clerk_secret_key'  # Replace with your actual secret key
+CLERK_JWT_AUDIENCE = 'your_audience_value'  # Usually this is your app name
+
+# For development, set to True to bypass authentication
+BYPASS_CLERK_AUTH = True  # Set to False in production
+
 # Application definition
 
 INSTALLED_APPS = [

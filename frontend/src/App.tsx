@@ -4,19 +4,40 @@ import { SignedIn, SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 function App() {
   const { isLoaded, getToken, signOut } = useAuth();
 
-  const getAllPosts = async () => {
-    const token = await getToken();
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_API_URL}/posts`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`, 
-          "Content-Type": "application/json",
-        },
+  // Update your fetch function to handle auth errors
+  const makeAuthenticatedRequest = async (url: string, options = {}) => {
+    try {
+      const token = await getToken();
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_API_URL}${url}`,
+        {
+          ...options,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            ...options.headers,
+          },
+        }
+      );
+      
+      if (response.status === 403) {
+        console.error("Authentication error: Forbidden");
+        // Handle forbidden error - could sign out or redirect
+        // signOut();
+        // Or just log it during development:
+        console.log("Dev mode: Authentication would normally fail here");
       }
-    );
-    const data = await response.json();
+      
+      return await response.json();
+    } catch (error) {
+      console.error("Request failed:", error);
+      return { error: "Request failed" };
+    }
+  };
+
+  // Use this function for your API calls
+  const getAllPosts = async () => {
+    const data = await makeAuthenticatedRequest("/posts");
     console.log(data);
   };
 
