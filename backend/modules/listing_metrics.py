@@ -1,5 +1,5 @@
 class AmazonListing:
-    def _init_(self, title, keywords, bullet_points, description, images, backend_keywords):
+    def __init__(self, title, keywords, bullet_points, description, images, backend_keywords):
         self.title = title
         self.keywords = keywords
         self.bullet_points = bullet_points
@@ -25,7 +25,7 @@ class AmazonListing:
 
 
 class FlipkartListing:
-    def _init_(self, title, brand, category, description, images):
+    def __init__(self, title, brand, category, description, images):
         self.title = title
         self.brand = brand
         self.category = category
@@ -43,7 +43,7 @@ class FlipkartListing:
 
 
 class FlipkartComplianceChecker:
-    def _init_(self, listings):
+    def __init__(self, listings):
         self.listings = listings
 
     def calculate_compliance(self):
@@ -53,7 +53,7 @@ class FlipkartComplianceChecker:
 
 
 class MeeshoListing:
-    def _init_(self, impressions, clicks):
+    def __init__(self, impressions, clicks):
         self.impressions = impressions
         self.clicks = clicks
 
